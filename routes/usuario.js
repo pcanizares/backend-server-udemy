@@ -21,7 +21,7 @@ app.get('/', (request, response, next) => {
 
 	desde = Number(desde);
 
-	Usuario.find({  }, 'nombre email img role')
+	Usuario.find({  }, 'nombre email img role google')
 	.skip(desde)
 		.limit(5)
 		.exec((err, usuarios) => {
@@ -74,10 +74,11 @@ app.get('/', (request, response, next) => {
 //==========================================
 //Insertar un nuevo usuario
 //==========================================
-app.post('/', mdAutenticacion.verificaToken, (req, res) => {
+//app.post('/', mdAutenticacion.verificaToken, (req, res) => {
+app.post('/',  (req, res) => {
 	var body = req.body;
 
-	var usuario = new Usuario({
+	var usuario = new Usuario({ 
 		nombre: body.nombre,
 		email: body.email,
 		password: bcrypt.hashSync(body.password, 10),
@@ -108,7 +109,7 @@ app.post('/', mdAutenticacion.verificaToken, (req, res) => {
 //==========================================
 //Actualizar un nuevo
 //==========================================
-app.put('/:id', mdAutenticacion.verificaToken, (req, res) => {
+app.put('/:id', [mdAutenticacion.verificaToken, mdAutenticacion.verificaAdminRoleOMismoUsuario], (req, res) => {
 
 	var id = req.params.id;
 	var body = req.body;
@@ -162,7 +163,7 @@ app.put('/:id', mdAutenticacion.verificaToken, (req, res) => {
 //==========================================
 //Eliminar un usuario
 //==========================================
-app.delete('/:id', mdAutenticacion.verificaToken, (req, res) => {
+app.delete('/:id', [mdAutenticacion.verificaToken, mdAutenticacion.verificaAdminRoleOMismoUsuario], (req, res) => {
 
 	var id = req.params.id;
 
